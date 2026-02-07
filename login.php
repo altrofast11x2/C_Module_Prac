@@ -80,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = DB::fetch("SELECT * FROM users WHERE id = '$id'");
     if (!$user) {
         back('존재하지 않는 아이디입니다.');
+        exit;
     }
     $salt = $user['salt'];
     $enc_pw = hash('sha256', $pw . $salt);
