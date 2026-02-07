@@ -89,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['id'] = $user['id'];
         $_SESSION['pw'] = $user['pw'];
         move('index.php', '로그인 성공!');
+        exit;
     } else {
         back('비밀번호 또는 아이디가 틀렸습니다');
         exit;
