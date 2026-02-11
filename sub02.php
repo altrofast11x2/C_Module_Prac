@@ -17,7 +17,6 @@
 <body>
   <?php
   require_once "header.php";
-  require_once "kick.php";
   ?>
   <!-- 전체상품 및 영상 -->
   <section class="all_category">

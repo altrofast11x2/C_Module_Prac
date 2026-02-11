@@ -51,8 +51,14 @@ require_once 'lib.php';
         <?php
         //strtolower = 대소문자 상관없이
         if (isset($_SESSION['id']) && strtolower($_SESSION['id']) === 'admin') {
-          echo "<a href='admin.php'>관리자</a>";
-          // alert('관리자 계정입니다.');
+          echo "<li>
+          <a href='admin.php' class='special'style='padding: 12px 40px;'>관리자</a>
+          <ul>
+            <li><a href='admin.php#board'>공지사항 관리</a></li>
+            <li><a href='admin.php#user_management'>회원관리</a></li>
+          </ul>
+        </li>
+        <li>";
         }
         ?>
       </ul>

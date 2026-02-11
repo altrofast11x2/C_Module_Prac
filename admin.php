@@ -69,7 +69,7 @@ require_once "admin_kick.php"
         <div class="count">
           <h2 style="color: #333;">총 <?= $cnt ?> 개</h2>
         </div>
-        <form action="#board" method="GET" style="display: flex; margin:20px 0;">
+        <div style="display: flex;align-items: center; margin:20px 0;">
           <a href="add.php" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">글 추가하기</a>
           <!-- <input type="text" name="search" placeholder="검색하실 제목 또는 유형을 적어주세요." style="border: 2px solid #33333370; padding:12px; width: 300px; font-size: 1em; border-radius: 16px;"> -->
           <a href="?type=일반#board" style="color: rgb(172, 92, 255);background-color:#f3f3f3;padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">일반</a>
@@ -77,7 +77,7 @@ require_once "admin_kick.php"
           <a href="?#board" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">전체보기</a>
           <a href="?sort=asc#board" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">ASC (오래된순)</a>
           <a href="?sort=desc#board" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">DESC (최신순)</a>
-        </form>
+        </div>
       </div>
       <table>
         <thead>
@@ -119,6 +119,75 @@ require_once "admin_kick.php"
 
         <?php if ($page < $total_page) { ?>
           <a href="?page=<?= $page + 1 ?>&type=<?= $type ?>#board.php" class="right arrow">&gt;</a>
+        <?php } else { ?>
+          <span class="right arrow" style="opacity:0.5;">&gt;</span>
+        <?php } ?>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="notice" id="user_management" style="margin-top: 90px;">
+    <div class="container">
+      <h2 class="title"><span>회원관리</span>USER MANAGEMENT</h2>
+      <?php
+      $id = "";
+      $where_id = "";
+      if ($id) {
+        $where_id = "WHERE id = '$id'";
+      }
+      $counter = DB::fetch("SELECT COUNT(*) AS CNT FROM users");
+      $u_cnt = $counter['CNT'];
+      $page2 = $_GET['page2'] ?? 1;
+      $scale2 = 6;
+      $start2 = ($page2 - 1) * $scale2;
+      $total_page2 = ceil($u_cnt / $scale2);
+      if ($total_page2 == 0) $total_page2 == 1;
+      $u_page = DB::fetchAll("SELECT COUNT(*) AS CNT2 FROM users $where_id");
+      ?>
+      <div class="noti_head" style="display: flex; justify-content: space-between; ">
+        <h2 style="color: #333;">총 <?= $u_cnt ?> 명</h2>
+        <div class="count" style="display: flex; align-items: center; margin: 20px 0;">
+          <a href="?sort2=DESC#user_management" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">DESC(가입 최신순)</a>
+          <a href="?sort2=ASC#user_management" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">ASC(가입 오래된순)</a>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col" style="width: 250px;">아이디</th>
+            <th scope="col" style="width: 250px;">비밀번호</th>
+            <th scope="col" style="width: 250px">이름</th>
+            <th scope="col" style="width: 250px;">이메일</th>
+            <th scope="col" style="width: 250px;">생성일자</th>
+          </tr>
+        </thead>
+        <tbody style="font-size: .9em;">
+          <?php
+          $sort2 = $_GET['sort2'] ?? 'DESC';
+          $sql2 = DB::fetchAll("SELECT * FROM users $where_id ORDER BY date $sort2 LIMIT $start2,$scale2");
+          foreach ($sql2 as $data) { ?>
+            <tr>
+              <td><?= $data['id'] ?></td>
+              <td><?= $data['pw'] ?></td>
+              <td><?= $data['name'] ?></td>
+              <td><?= $data['email'] ?></td>
+              <td><?= $data['date'] ?></td>
+            </tr>
+          <?php } ?>
+        </tbody>
+      </table>
+      <div class="arrows" style="text-align:center;">
+        <?php if ($page2 > 1) { ?>
+          <a href="?page2=<?= $page2 - 1 ?>#user_management" class="left arrow">&lt;</a>
+        <?php } else { ?>
+          <span class="left arrow" style="opacity:0.5;">&lt;</span>
+        <?php } ?>
+        <div class="num" style="display:inline-block; margin:0 10px;">
+          <?= $page2 ?> / <?= $total_page2 ?>
+        </div>
+        <?php if ($page2 < $total_page2) { ?>
+          <a href="?page2=<?= $page2 + 1 ?>#user_management" class="right arrow">&gt;</a>
         <?php } else { ?>
           <span class="right arrow" style="opacity:0.5;">&gt;</span>
         <?php } ?>

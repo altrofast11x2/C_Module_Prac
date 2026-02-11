@@ -17,7 +17,6 @@
 <body>
   <?php
   require_once "header.php";
-  require_once "kick.php";
   ?>
   <!-- 슬라이드 -->
   <div class="slide_container">
