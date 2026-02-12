@@ -17,7 +17,6 @@
 <body>
   <?php
   require_once "header.php";
-  require_once "kick.php";
   ?>
   <!-- 인기상품 -->
   <section class="all_category famus">

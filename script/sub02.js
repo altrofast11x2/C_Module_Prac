@@ -60,7 +60,7 @@ function closeModal() {
 // 랜덤 아이디 생성
 userId.textContent += Array.from(
   { length: 6 },
-  () => IDS[Math.floor(Math.random() * IDS.length)]
+  () => IDS[Math.floor(Math.random() * IDS.length)],
 ).join("");
 // 드래그
 function giveDrag() {
@@ -101,7 +101,7 @@ drop.ondrop = (e) => {
       <input type="number" value="1" min="1">
       <div>총: <span class="total">0</span> 원</div>
     </div>
-    `
+    `,
   );
   item.querySelector("input").oninput = priceChange;
 
@@ -130,7 +130,7 @@ document.body.ondragover = (e) => e.preventDefault();
 function category(name, el) {
   $$(".cate div").forEach((v) => v.classList.remove("active"));
   el.classList.add("active");
-// 비회원 주문 HTML(데이터 값을 data.json 을 통해서 가져 오는것 포함해서 말하는것임)
+  // 비회원 주문 HTML(데이터 값을 data.json 을 통해서 가져 오는것 포함해서 말하는것임)
   fetch("./data.json")
     .then((r) => r.json())
     .then((data) => {
@@ -143,8 +143,8 @@ function category(name, el) {
           `<div class="item">
             <div class="img-cover">
               <img src="./선수제공파일/A-Module/images/${name}/${
-            i + 1
-          }.PNG"alt="${name}/${i}">
+                i + 1
+              }.PNG"alt="${name}/${i}">
             </div>
             <div class="item_content">
               <div class="item-title">${v.title}</div>
@@ -157,7 +157,7 @@ function category(name, el) {
                 }
               </div>
             </div>
-          </div>`
+          </div>`,
         );
       });
       giveDrag();
@@ -198,3 +198,11 @@ $(".checoutBtn").onclick = () => {
 };
 
 category("건강식품", $(".active"));
+
+async function addCart(idx, user) {
+  const res = await fetch(`../addCart.php?idx=${idx}&user=${user}`);
+
+  const data = await res.text();
+
+  console.log(data);
+}

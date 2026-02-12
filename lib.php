@@ -11,11 +11,13 @@ function alert($m)
 
 function move($m, $a = null)
 {
-    alert($a);
+    if ($a) alert($a);
     script("location.href = '$m'");
+    exit;
 }
 function back($a = null)
 {
     if ($a) alert($a);
     script("history.back()");
+    exit;
 }

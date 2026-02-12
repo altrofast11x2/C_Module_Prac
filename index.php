@@ -17,7 +17,6 @@
 <body>
   <?php
   require_once "header.php";
-  require_once "kick.php";
   ?>
   <!-- 슬라이드 -->
   <div class="slide_container">
@@ -322,46 +321,55 @@
     </section>
     <!-- 공지사항 -->
 
-    <section class="notice" id="board">
+    <section class="notice" id="board" style="margin-top: 90px;">
       <div class="container">
-        <h2 class="title"><span>공지사항</span>NOTICE</h2>
+        <h2 class="title"><span>공지사항 관리</span>NOTICE MANAGEMENT</h2>
         <?php
         // 검색
-        $search = $_GET['search'] ?? '';
-        $srch = "";
-        if ($search) {
-          $srch = "WHERE title LIKE '%$search%' OR type LIKE '%$search%'";
-        }
-        $counter = DB::fetch("SELECT count(*)AS cnt FROM board $srch");
-        $cnt = $counter['cnt'] ?? 0;
+        // $search = $_GET['search'] ?? '';
+        // $srch = "";
+        // if ($search) {
+        //   $srch = "WHERE  OR type LIKE '%$search%'";
+        // }
 
         // pagenation
+        $type = $_GET['type'] ?? '';
         $page = $_GET['page'] ?? 1;
         $sort = $_GET['sort'] ?? 'desc';
+        $where_sql = "";
+        if ($type) {
+          $where_sql = "WHERE type = '$type'";
+        }
+        $counter = DB::fetch("SELECT count(*)AS cnt FROM board $where_sql");
+        $cnt = $counter['cnt'] ?? 0;
+
         $scale = 6;
         $start = ($page - 1) * $scale;
-        $total_cnt = DB::fetch("SELECT count(*) AS cnt FROM board")['cnt'] ?? 0;
-        $total_page = ceil($total_cnt / $scale);
-        $board_list = DB::fetchAll("SELECT * FROM board $srch ORDER BY date $sort LIMIT $start,$scale");
+
+        $total_page = ceil($cnt / $scale);
+        if ($total_page == 0) $total_page = 1;
+
+        $board_list = DB::fetchAll("SELECT * FROM board $where_sql ORDER BY date $sort LIMIT $start,$scale");
         ?>
         <div class="noti_head" style="display: flex;justify-content: space-between;">
           <div class="count">
             <h2 style="color: #333;">총 <?= $cnt ?> 개</h2>
           </div>
           <form action="#board" method="GET" style="display: flex; margin:20px 0;">
-            <input type="text" name="search" placeholder="검색하실 제목 또는 유형을 적어주세요." style="border: 2px solid #33333370; padding:12px; width: 300px; font-size: 1em; border-radius: 16px;">
-            <a href="index.php?search=#board" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">전체보기</a>
-            <a href="?search=일반&sort=asc#board" style="color: rgb(172, 92, 255);background-color:#f3f3f3;padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">일반</a>
-            <a href="?search=이벤트&sort=asc#board" style="color: rgb(172, 92, 255);background-color:#f3f3f3;padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">이벤트</a>
-            <a href="?search=<?= $search ?>&sort=asc#board" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">ASC (오래된순)</a>
-            <a href="?search=<?= $search ?>&sort=desc#board" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">DESC (최신순)</a>
+            <a href="add.php" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">글 추가하기</a>
+            <!-- <input type="text" name="search" placeholder="검색하실 제목 또는 유형을 적어주세요." style="border: 2px solid #33333370; padding:12px; width: 300px; font-size: 1em; border-radius: 16px;"> -->
+            <a href="?type=일반#board" style="color: rgb(172, 92, 255);background-color:#f3f3f3;padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">일반</a>
+            <a href="?type=이벤트#board" style="color: rgb(172, 92, 255);background-color:#f3f3f3;padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">이벤트</a>
+            <a href="?#board" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">전체보기</a>
+            <a href="?sort=asc#board" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">ASC (오래된순)</a>
+            <a href="?sort=desc#board" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">DESC (최신순)</a>
           </form>
         </div>
         <table>
           <thead>
             <tr>
               <th scope="col" style="width: 200px;">유형</th>
-              <th scope="col" style="width: 250px;">제목</th>
+              <th scope="col" style="width: 300px;">제목</th>
               <th scope="col" style="width: 200px;">공지일자</th>
             </tr>
           </thead>
@@ -381,7 +389,7 @@
         } ?>
         <div class="arrows" style="text-align:center;">
           <?php if ($page > 1) { ?>
-            <a href="?page=<?= $page - 1 ?>#board" class="left arrow">&lt;</a>
+            <a href="?page=<?= $page - 1 ?>&type=<?= $type ?>#board" class="left arrow">&lt;</a>
           <?php } else { ?>
             <span class="left arrow" style="opacity:0.5;">&lt;</span>
           <?php } ?>
@@ -391,7 +399,7 @@
           </div>
 
           <?php if ($page < $total_page) { ?>
-            <a href="?page=<?= $page + 1 ?>#board" class="right arrow">&gt;</a>
+            <a href="?page=<?= $page + 1 ?>&type=<?= $type ?>#board" class="right arrow">&gt;</a>
           <?php } else { ?>
             <span class="right arrow" style="opacity:0.5;">&gt;</span>
           <?php } ?>

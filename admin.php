@@ -30,7 +30,7 @@
 </style>
 <?php
 require_once "header.php";
-require_once "kick.php";
+// require_once "kick.php";
 require_once "admin_kick.php"
 ?>
 
@@ -125,6 +125,74 @@ require_once "admin_kick.php"
       </div>
     </div>
   </section>
-</body>
-
-</html>
+  <section class="notice" id="user_list">
+    <div class="container">
+      <h2 class="title"><span>회원관리</span>USER MANAGEMENT</h2>
+      <?php
+      $srch = "";
+      $search = $_GET['search'] ?? '';
+      if ($search) {
+        $srch = "WHERE id LIKE '%$search%'";
+      }
+      $sort2 = $_GET['sort2'] ?? 'DESC';
+      $counter2 = DB::fetch("SELECT COUNT(*) AS CNT2 FROM users $search");
+      $cnt2 = $counter2['CNT2'] ?? 0;
+      $page2 = $_GET['page'] ?? 1;
+      $scale2 = 6;
+      $start2 = ($page2 - 1) * $scale2;
+      $total_page2 = ceil($cnt2 / $scale2);
+      if ($total_page2 == 0) $total_page2 = 1;
+      $user_list = DB::fetchAll("SELECT * FROM users $srch ORDER BY date $sort2 LIMIT $start2,$scale2");
+      ?>
+      <!-- class noti_head 재활용한것 -->
+      <div class="noti_head" style="display: flex;align-items: center; justify-content: space-between; margin: 20px 0;">
+        <div class="count">
+          <h2 style="color: #333;">총 <?= $cnt2 ?> 명</h2>
+        </div>
+        <div class="rope" style="display: flex; align-items: center; justify-content:space-between;">
+          <form method="GET">
+            <input type="search" name="search" style="border: 2px solid #33333370; padding: 12px; width: 300px; font-size: 1em;margin: 0 10px; border-radius: 16px;" placeholder="아이디 검색">
+          </form>
+          <a href="?sort2=desc#user_list" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">ASC (가입 최신순)</a>
+          <a href="?sort2=asc#user_list" style="color: #f3f3f3;background-color: rgb(172, 92, 255);padding: 10px; margin: 0 10px; border-radius: 16px; font-weight: 550; border: 2px solid #33333370;">DESC (가입 오래된순)</a>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th scrop="col" style="width: 250px;">아이디</th>
+            <th scrop="col" style="width: 250px;">암호화된 비밀번호</th>
+            <th scrop="col" style="width: 250px;">이름</th>
+            <th scrop="col" style="width: 250px;">이메일</th>
+            <th scrop="col" style="width: 250px;">생성날짜</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($user_list as $data) { ?>
+            <tr>
+              <td><?= $data['id'] ?></td>
+              <td><?= $data['pw'] ?></td>
+              <td><?= $data['name'] ?></td>
+              <td><?= $data['email'] ?></td>
+              <td><?= $data['date'] ?></td>
+            </tr>
+          <?php } ?>
+        </tbody>
+      </table>
+      <div class="arrows" style="text-align:center;">
+        <?php if ($page2 > 1) { ?>
+          <a href="?page=<?= $page2 - 1 ?>#user_list" class="left arrow">&lt;</a>
+        <?php } else { ?>
+          <span class="left arrow" style="opacity:0.5;">&lt;</span>
+        <?php } ?>
+        <div class="num" style="display:inline-block; margin:0 10px;">
+          <?= $page2 ?> / <?= $total_page2 ?>
+        </div>
+        <?php if ($page2 < $total_page2) { ?>
+          <a href="?page=<?= $page2 + 1 ?>#user_list" class="right arrow">&gt;</a>
+        <?php } else { ?>
+          <span class="right arrow" style="opacity:0.5;">&gt;</span>
+        <?php } ?>
+      </div>
+    </div>
+  </section>
